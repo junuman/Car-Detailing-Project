@@ -1,13 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// ✅ Define transporter ONCE
+// Email transporter
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -16,15 +19,15 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// API route
 app.post('/api/book', async (req, res) => {
   const { name, email, message, appointment } = req.body;
 
-  // Respond to client immediately
   res.status(200).send('Request received');
 
-  // Then send the email asynchronously
   transporter.sendMail({
-    from: email,
+    from: `"${name}" <${process.env.EMAIL_USER}>`,
+    replyTo: email,
     to: process.env.EMAIL_USER,
     subject: 'New Appointment Booking',
     html: `
@@ -36,10 +39,17 @@ app.post('/api/book', async (req, res) => {
     `,
   }).catch((error) => {
     console.error('Email error (post-response):', error);
-    // Optionally, log this to a database or alert system
   });
 });
 
+// Serve frontend in production
+const clientBuildPath = path.join(__dirname, '../client/build');
+app.use(express.static(clientBuildPath));
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(clientBuildPath, 'index.html'));
+});
+
+// Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
