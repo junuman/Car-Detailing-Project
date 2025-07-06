@@ -42,6 +42,7 @@ app.post('/api/book', async (req, res) => {
   });
 });
 
+
 // Serve frontend in production
 const clientBuildPath = path.join(__dirname, '../client/build');
 app.use(express.static(clientBuildPath));
