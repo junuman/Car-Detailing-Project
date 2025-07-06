@@ -1,7 +1,13 @@
 const Gallery = () => {
   const jobs = [
-    { before: '/images/jeepbefore.jpg', after: '/images/jeepafter.jpg' },
-    { before: '/images/teslabefore.jpg', after: '/images/teslaafter.jpg' },
+    {
+      before: '/images/jeepbefore.jpg',
+      after: '/images/jeepafter.jpg',
+    },
+    {
+      before: '/images/teslabefore.jpg',
+      after: '/images/teslaafter.jpg',
+    },
   ];
 
   return (
