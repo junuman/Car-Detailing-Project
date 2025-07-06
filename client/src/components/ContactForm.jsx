@@ -5,9 +5,13 @@ import useFadeInOnScroll from '../hooks/useFadeInOnScroll';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 const ContactForm = () => {
-  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
+  });
   const [selectedDate, setSelectedDate] = useState(null);
   const [loading, setLoading] = useState(false);
   const [ref, isVisible] = useFadeInOnScroll();
@@ -27,7 +31,10 @@ const ContactForm = () => {
     const startTime = Date.now();
 
     try {
-      const res = await fetch('http://localhost:5000/api/book', {
+      const baseUrl =
+        process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';
+
+      const res = await fetch(`${baseUrl}/api/book`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -38,7 +45,7 @@ const ContactForm = () => {
 
       setTimeout(() => {
         toast.success('Appointment request sent!');
-        setForm({ name: '', email: '', message: '' });
+        setForm({ name: '', email: '', phone: '', message: '' });
         setSelectedDate(null);
         setLoading(false);
       }, waitTime);
@@ -72,6 +79,15 @@ const ContactForm = () => {
             onChange={handleChange}
             required
           />
+          <input
+            name="phone"
+            type="tel"
+            placeholder="Phone (e.g., +1 555-555-5555)"
+            value={form.phone}
+            onChange={handleChange}
+            pattern="^\+?[0-9\s\-]{7,20}$"
+            required
+          />
           <textarea
             name="message"
             placeholder="Describe what you need"
@@ -95,7 +111,7 @@ const ContactForm = () => {
           </button>
         </form>
 
-        {/* 👇 Toast Message Container */}
+        {/* Toast Message Container */}
         <ToastContainer position="bottom-right" autoClose={4000} />
       </section>
     </section>
