@@ -21,7 +21,7 @@ const transporter = nodemailer.createTransport({
 
 // API route
 app.post('/api/book', async (req, res) => {
-  const { name, email, message, appointment } = req.body;
+  const { name, email, phone, message, appointment } = req.body;
 
   res.status(200).send('Request received');
 
@@ -33,7 +33,8 @@ app.post('/api/book', async (req, res) => {
     html: `
       <h3>New Appointment Request</h3>
       <p><strong>Name:</strong> ${name}</p>
-      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+      <p><strong>Phone:</strong> <a href="tel:${phone}">${phone}</a></p>
       <p><strong>Message:</strong> ${message}</p>
       <p><strong>Requested Time:</strong> ${new Date(appointment).toLocaleString()}</p>
     `,
@@ -41,7 +42,6 @@ app.post('/api/book', async (req, res) => {
     console.error('Email error (post-response):', error);
   });
 });
-
 
 // Serve frontend in production
 const clientBuildPath = path.join(__dirname, '../client/build');
