@@ -3,7 +3,7 @@ import useFadeInOnScroll from '../hooks/useFadeInOnScroll';
 const team = [
   {
     name: 'Ahad',
-    image: '/images/ahad.jpg',
+    image: '/images/ahad2.jpg',
     role: 'Co-Founder & Lead Detailer',
     phone: '416-896-1143',
     email: 'ahadabdul631@gmail.com',
