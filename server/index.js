@@ -43,11 +43,24 @@ app.post('/api/book', async (req, res) => {
   });
 });
 
-// Serve frontend in production
+// Serve frontend static files
 const clientBuildPath = path.join(__dirname, '../client/build');
 app.use(express.static(clientBuildPath));
 
+// Only serve index.html for non-API, non-static GET requests
 app.get('*', (req, res) => {
+  const requestedPath = req.path;
+
+  // If request starts with /api or /static or ends in .js/.css/etc, let express.static handle it
+  if (
+    requestedPath.startsWith('/api') ||
+    requestedPath.startsWith('/static') ||
+    requestedPath.includes('.') // handles .js, .css, .json, etc
+  ) {
+    return res.status(404).send('Not Found');
+  }
+
+  // Else fallback to index.html (for client-side routing)
   res.sendFile(path.join(clientBuildPath, 'index.html'));
 });
 
