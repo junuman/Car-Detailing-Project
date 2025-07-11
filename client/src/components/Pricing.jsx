@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from 'react';
+
 const packages = [
   {
     name: 'Interior Detailing',
@@ -27,39 +29,88 @@ const addOns = [
     price: '$200+',
     description: 'Long-lasting hydrophobic layer with paint protection.',
   },
-   {
+  {
     name: 'Headlight Restoration',
     price: '$50',
     description: 'Restores clarity to faded, yellowed headlights for improved visibility, safety and aesthetics.',
   },
 ];
 
-const Pricing = () => (
-  <section id="pricing">
-    <h2>Pricing</h2>
+// ✅ Fire Meta Pixel custom event
+const trackPixelEvent = (eventName, data = {}) => {
+  if (window.fbq) {
+    window.fbq('trackCustom', eventName, data);
+  }
+};
 
-    <h3 className="pricing-subtitle">Packages</h3>
-    <div className="pricing-grid">
-      {packages.map((item, i) => (
-        <div className="pricing-card" key={i}>
-          <h4>{item.name}</h4>
-          <p className="price">{item.price}</p>
-          <p className="description">{item.description}</p>
-        </div>
-      ))}
-    </div>
+const Pricing = () => {
+  const sectionRef = useRef(null);
+  const [hasFiredView, setHasFiredView] = useState(false);
 
-    <h3 className="pricing-subtitle">Add-Ons</h3>
-    <div className="pricing-grid">
-      {addOns.map((item, i) => (
-        <div className="pricing-card">
-  <h4>{item.name}</h4>
-  <p className="price">{item.price}</p>
-  <p className="description">{item.description}</p>
-</div>
-      ))}
-    </div>
-  </section>
-);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && !hasFiredView) {
+          trackPixelEvent('ViewPricing');
+          setHasFiredView(true);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, [hasFiredView]);
+
+  return (
+    <section id="pricing" ref={sectionRef}>
+      <h2>Pricing</h2>
+
+      <h3 className="pricing-subtitle">Packages</h3>
+      <div className="pricing-grid">
+        {packages.map((item, i) => (
+          <div
+            className="pricing-card"
+            key={i}
+            onClick={() => trackPixelEvent('SelectPackage', {
+              item_name: item.name,
+              price: item.price,
+            })}
+          >
+            <h4>{item.name}</h4>
+            <p className="price">{item.price}</p>
+            <p className="description">{item.description}</p>
+          </div>
+        ))}
+      </div>
+
+      <h3 className="pricing-subtitle">Add-Ons</h3>
+      <div className="pricing-grid">
+        {addOns.map((item, i) => (
+          <div
+            className="pricing-card"
+            key={i}
+            onClick={() => trackPixelEvent('SelectAddOn', {
+              item_name: item.name,
+              price: item.price,
+            })}
+          >
+            <h4>{item.name}</h4>
+            <p className="price">{item.price}</p>
+            <p className="description">{item.description}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
 
 export default Pricing;

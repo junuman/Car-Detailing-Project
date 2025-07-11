@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import useFadeInOnScroll from '../hooks/useFadeInOnScroll';
@@ -16,12 +16,24 @@ const ContactForm = () => {
   const [loading, setLoading] = useState(false);
   const [ref, isVisible] = useFadeInOnScroll();
 
+  // ✅ Trigger Meta Pixel event when form scrolls into view
+  useEffect(() => {
+    if (isVisible && window.fbq) {
+      window.fbq('trackCustom', 'ViewedBookingForm');
+    }
+  }, [isVisible]);
+
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    // ✅ Fire Meta Pixel "Lead" event
+    if (window.fbq) {
+      window.fbq('track', 'Lead');
+    }
 
     const data = {
       ...form,
@@ -52,6 +64,13 @@ const ContactForm = () => {
     } catch (err) {
       toast.error('Error sending appointment');
       setLoading(false);
+    }
+  };
+
+  // ✅ Fire Meta Pixel custom event on booking button click
+  const handleClick = () => {
+    if (window.fbq) {
+      window.fbq('trackCustom', 'BookClick');
     }
   };
 
@@ -106,7 +125,7 @@ const ContactForm = () => {
             required
           />
 
-          <button type="submit" disabled={loading}>
+          <button type="submit" disabled={loading} onClick={handleClick}>
             {loading ? <div className="spinner"></div> : 'Book Appointment'}
           </button>
         </form>
