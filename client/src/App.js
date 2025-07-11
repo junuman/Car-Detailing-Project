@@ -81,6 +81,18 @@ function App() {
       <Team />
       <Pricing />
       <Contact />
+
+      {/* Footer with Privacy Policy Link */}
+      <footer style={{ textAlign: 'center', padding: '2rem 0' }}>
+        <a
+          href="/privacy-policy.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: '#888', fontSize: '0.9rem', textDecoration: 'underline' }}
+        >
+          Privacy Policy
+        </a>
+      </footer>
     </div>
   );
 }
