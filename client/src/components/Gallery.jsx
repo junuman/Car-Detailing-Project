@@ -5,8 +5,8 @@ const Gallery = () => {
       after: '/images/jeepafter.jpg',
     },
     {
-      before: '/images/teslabefore.jpg',
-      after: '/images/teslaafter.jpg',
+      before: '/images/hondabefore.jpg',
+      after: '/images/hondaafter.jpg',
     },
   ];
 
