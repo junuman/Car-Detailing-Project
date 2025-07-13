@@ -10,7 +10,7 @@ const team = [
   },
   {
     name: 'Umair',
-    image: '/images/umair.jpg',
+    image: '/images/umair2.jpg',
     role: 'Co-Founder & Operations',
     phone: '416-895-2827',
     email: 'mo07sidd@gmail.com',
